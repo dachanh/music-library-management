@@ -5,17 +5,14 @@ import (
 	"os"
 	"time"
 
-	"music-library-management/client"
-
-	// "music-library-management/model/cache"
+	"music-library-management/sdk"
 
 	"music-library-management/conf"
 	"music-library-management/model"
 
-	"music-library-management/common"
-	"music-library-management/db"
+	"music-library-management/sdk/common"
+	"music-library-management/sdk/db"
 
-	"gitlab.com/thuocsi.vn-sdk/go-sdk/sdk"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -58,14 +55,14 @@ func onDBLogConnected(s *mongo.Database) error {
 func main() {
 
 	globalInfo = &infoData{
-		Service:     "Product",
+		Service:     "API",
 		Version:     os.Getenv("version"),
 		Environment: conf.Config.Env,
 		StartTime:   time.Now(),
 	}
 
 	// setup new app
-	var app = sdk.NewApp("Product service")
+	var app = sdk.NewApp("service")
 	configMap, err := app.GetConfigFromEnv()
 	if err != nil {
 		fmt.Println("Parse config error: " + err.Error())
@@ -81,28 +78,6 @@ func main() {
 		DBName:   conf.Config.MainDBName,
 		AuthDB:   conf.Config.MainAuthDB,
 	}, onDBConnected)
-
-	// DB queue
-	queueAddr := configMap["queueAddr"]
-	if queueAddr == "" {
-		queueAddr = configMap["dbAddr"]
-	}
-	queueUser := configMap["queueUser"]
-	if queueUser == "" {
-		queueUser = configMap["dbUser"]
-	}
-	queuePassword := configMap["queuePassword"]
-	if queuePassword == "" {
-		queuePassword = configMap["dbPassword"]
-	}
-	app.SetupDBClient(db.Configuration{
-		Address:     queueAddr,
-		Username:    queueUser,
-		Password:    queuePassword,
-		DBName:      conf.Config.JobDBName,
-		AuthDB:      conf.Config.JobAuthDB,
-		DoWriteTest: true,
-	}, onDBJobConnected)
 
 	// DB log
 	logAddr := configMap["logAddr"]

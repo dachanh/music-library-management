@@ -7,7 +7,7 @@ import (
 	"reflect"
 	"time"
 
-	"music-library-management/common"
+	"music-library-management/sdk/common"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
