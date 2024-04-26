@@ -5,10 +5,10 @@ import (
 	"os"
 	"time"
 
+	"music-library-management/models"
 	"music-library-management/sdk"
 
 	"music-library-management/conf"
-	"music-library-management/model"
 
 	"music-library-management/sdk/common"
 	"music-library-management/sdk/db"
@@ -32,10 +32,15 @@ func info(req sdk.APIRequest, res sdk.APIResponder) error {
 	})
 }
 
+// onDBLogConnected ...
+func onDBLogConnected(s *mongo.Database) error {
+	return nil
+}
+
 // onDBConnected function that handle on connected to DB event
 func onDBConnected(s *mongo.Database) error {
 
-	model.InitIDGenModel(s)
+	models.InitMusicTrackModel(s)
 	// model
 
 	return nil
@@ -43,12 +48,6 @@ func onDBConnected(s *mongo.Database) error {
 
 // onCacheConnected is func handle event connected to db cache
 func onCacheConnected(s *mongo.Database) error {
-	return nil
-}
-
-// onDBLogConnected ...
-func onDBLogConnected(s *mongo.Database) error {
-	client.InitProductClient(s)
 	return nil
 }
 
@@ -114,4 +113,10 @@ func main() {
 
 	var server, _ = app.SetupAPIServer(protocol)
 
+	server.Expose(8080)
+
+	// launch app
+	if err := app.Launch(); err != nil {
+		panic(err)
+	}
 }

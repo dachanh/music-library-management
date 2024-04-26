@@ -7,19 +7,22 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"gitlab.com/thuocsi.vn-sdk/go-sdk/sdk"
-	"gitlab.com/thuocsi.vn-sdk/go-sdk/sdk/common"
-	"gitlab.com/thuocsi.vn-sdk/go-sdk/sdk/db"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 	"io"
 	"io/ioutil"
+	"music-library-management/sdk/common"
 	"net/http"
 	"net/url"
 	"os"
 	"strings"
 	"time"
+
+	"music-library-management/sdk/db"
+
+	"music-library-management/sdk"
+
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // RestClient :
@@ -68,7 +71,7 @@ type CallResult struct {
 	ErrorLog     *string             `json:"errorLog,omitempty" bson:"error_log,omitempty"`
 }
 
-//RestResult :
+// RestResult :
 type RestResult struct {
 	Body    string `json:"body,omitempty" bson:"body,omitempty"`
 	Content []byte `json:"content,omitempty" bson:"content,omitempty"`
@@ -207,8 +210,8 @@ func (c *RestClient) SetDBLog(database *mongo.Database) {
 	}
 
 	model := db.Instance{
-		ColName: colName,
-		DBName:  database.Name(),
+		ColName:        colName,
+		DBName:         database.Name(),
 		TemplateObject: &RequestLogEntry{},
 	}
 	model.ApplyDatabase(database)
@@ -219,13 +222,13 @@ func (c *RestClient) SetDBLog(database *mongo.Database) {
 	}
 	t := true
 	expS := int32(exp / time.Second)
-	model.CreateIndex(bson.D{ {"created_time", 1}}, &options.IndexOptions{
+	model.CreateIndex(bson.D{{"created_time", 1}}, &options.IndexOptions{
 		Background:         &t,
 		Sparse:             &t,
 		ExpireAfterSeconds: &expS,
 	})
 
-	model.CreateIndex(bson.D{ {"keys", 1}}, &options.IndexOptions{
+	model.CreateIndex(bson.D{{"keys", 1}}, &options.IndexOptions{
 		Background: &t,
 		Sparse:     &t,
 	})

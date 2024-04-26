@@ -1,9 +1,10 @@
 package client
 
 import (
-	"gitlab.com/thuocsi.vn-sdk/go-sdk/sdk"
-	"gitlab.com/thuocsi.vn-sdk/go-sdk/sdk/common"
+	"music-library-management/sdk/common"
 	"time"
+
+	"music-library-management/sdk"
 )
 
 // APIClient
@@ -27,8 +28,6 @@ type APIClientConfiguration struct {
 
 func NewAPIClient(config *APIClientConfiguration) APIClient {
 	switch config.Protocol {
-	case "THRIFT":
-		return NewThriftClient(config.Address, config.Timeout, config.MaxConnection, config.MaxRetry, config.WaitToRetry, 600)
 	case "HTTP":
 		return NewHTTPClient(config)
 	}
